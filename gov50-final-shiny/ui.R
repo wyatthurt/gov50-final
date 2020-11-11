@@ -2,6 +2,8 @@
 
 library(shiny)
 library(shinythemes)
+library(tidyverse)
+library(scales)
 
 shinyUI(
     navbarPage(theme = shinytheme("journal"), 
@@ -13,9 +15,43 @@ shinyUI(
                         
                         #All the stuff
                         ),
+               
+               
                tabPanel("Most important channels",
-                        plotOutput("mostConnected")
-                        
+                        sidebarLayout(
+                          
+                          #In sidebarLayout need both sidebarPanel and mainPanel within the parentheses
+                          
+                          sidebarPanel(
+                            sliderInput("x_axis_range_subscribers", #Name of the thing in server which will be used as a variable
+                                        "Zoom in on a particular part of the graph", #What is displayed to user
+                                        min = 0,
+                                        max = 2000000,
+                                        value = c(0, 2000000))
+                          ),
+                          mainPanel(
+                            plotOutput("subscribers")
+                        )),
+                        sidebarLayout(
+                          sidebarPanel(
+                            selectInput("which_type_linksBySubscribers",
+                                        "Method of counting links:",
+                                        c("Total links from and to other outlets" = "from_to_total",
+                                          "Number of unique outlets linked to and from" = "from_to_unique")
+                                        )
+                          ),
+                          mainPanel(
+                            plotOutput("linksBySubscribers")
+                          )
+                        ),
+                        sidebarLayout(
+                          sidebarPanel(
+                            
+                          ),
+                          mainPanel(
+                            plotOutput("externalLinks")
+                          )
+                        )
                         ),
                
                tabPanel( "About me",
